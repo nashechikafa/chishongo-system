@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chishongo Reports</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: white;
+            color: black;
+        }
+
+        h1, h2 {
+            color: #0b5d7a;
+        }
+
+        .summary {
+            margin-bottom: 30px;
+        }
+
+        .summary p {
+            font-size: 18px;
+            margin: 8px 0;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .filter-box {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #f2f6f8;
+            border-radius: 8px;
+        }
+
+        .filter-box input {
+            padding: 8px;
+            margin-right: 10px;
+        }
+
+        .filter-box button,
+        .actions button,
+        .actions a {
+            padding: 10px 14px;
+            text-decoration: none;
+            border: none;
+            background-color: #0b5d7a;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #999;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #e6eef2;
+        }
+
+        .actions {
+            margin-bottom: 20px;
+        }
+
+        @media print {
+            .actions, .filter-box {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="actions">
+        <button onclick="window.print()">Print / Save PDF</button>
+        <a href="/dashboard/">Back to Dashboard</a>
+    </div>
+
+    <h1>Chishongo Business Report</h1>
+    <p><strong>Report Date:</strong> {{ today }}</p>
+
+    <div class="filter-box">
+        <form method="GET">
+            <label>Start Date</label>
+            <input type="date" name="start_date" value="{{ start_date }}">
+
+            <label>End Date</label>
+            <input type="date" name="end_date" value="{{ end_date }}">
+
+            <button type="submit">Filter Report</button>
+            <a href="/reports/">Clear Filter</a>
+        </form>
+    </div>
+
+    <div class="summary">
+        <h2>Filtered Summary</h2>
+        <p><strong>Total Revenue:</strong> ${{ total_revenue }}</p>
+        <p><strong>Gross Profit:</strong> ${{ total_profit }}</p>
+        <p><strong>Total Expenses:</strong> ${{ total_expenses }}</p>
+        <p><strong>Net Profit:</strong> ${{ net_profit }}</p>
+    </div>
+
+    <div class="summary">
+        <h2>Today's Snapshot</h2>
+        <p><strong>Today's Revenue:</strong> ${{ today_revenue }}</p>
+        <p><strong>Today's Gross Profit:</strong> ${{ today_profit }}</p>
+        <p><strong>Today's Expenses:</strong> ${{ today_expenses }}</p>
+        <p><strong>Today's Net Profit:</strong> ${{ today_net_profit }}</p>
+    </div>
+
+    <div class="section">
+        <h2>Recent Sales</h2>
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Cashier</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Date</th>
+            </tr>
+            {% for sale in recent_sales %}
+            <tr>
+                <td>{{ sale.product.name }}</td>
+                <td>{{ sale.cashier_name }}</td>
+                <td>{{ sale.quantity_sold }}</td>
+                <td>${{ sale.total_price }}</td>
+                <td>{{ sale.sale_date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No sales found for this period</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Recent Expenses</h2>
+        <table>
+            <tr>
+                <th>Recorded By</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Date</th>
+            </tr>
+            {% for expense in recent_expenses %}
+            <tr>
+                <td>{{ expense.recorded_by }}</td>
+                <td>{{ expense.category }}</td>
+                <td>{{ expense.description }}</td>
+                <td>${{ expense.amount }}</td>
+                <td>{{ expense.expense_date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No expenses found for this period</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Recent Deliveries</h2>
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Manager</th>
+                <th>Quantity Added</th>
+                <th>Buying Cost Total</th>
+                <th>Date</th>
+            </tr>
+            {% for delivery in recent_deliveries %}
+            <tr>
+                <td>{{ delivery.product.name }}</td>
+                <td>{{ delivery.manager_name }}</td>
+                <td>{{ delivery.quantity_added }}</td>
+                <td>${{ delivery.buying_cost_total }}</td>
+                <td>{{ delivery.delivery_date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No deliveries found for this period</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</body>
+</html>

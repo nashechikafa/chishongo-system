@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cashier Sales Entry</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #0b5d7a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 60%;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            margin-bottom: 16px;
+        }
+
+        button {
+            background-color: #0b5d7a;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .message {
+            color: red;
+            font-weight: bold;
+        }
+
+        .nav {
+            margin-top: 20px;
+        }
+
+        .nav a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #0b5d7a;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Cashier Sales Entry</h1>
+    </div>
+
+    <div class="container">
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Product</label>
+            <select name="product" required>
+                {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }} (Stock: {{ product.quantity }})</option>
+                {% endfor %}
+            </select>
+
+            <label>Cashier Name</label>
+            <input type="text" name="cashier_name" required>
+
+            <label>Quantity Sold</label>
+            <input type="number" name="quantity_sold" required>
+
+            <label>Notes</label>
+            <textarea name="notes"></textarea>
+
+            <button type="submit">Record Sale</button>
+        </form>
+
+        <div class="nav">
+            <a href="/sales/">View Sales</a>
+            <a href="/dashboard/">Dashboard</a>
+            <a href="/">Home</a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chishongo CEO Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #0b5d7a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+
+        .warning-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffcc00;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 220px;
+            flex: 1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #0b5d7a;
+        }
+
+        .danger {
+            border-left: 8px solid #c0392b;
+        }
+
+        .success {
+            border-left: 8px solid #27ae60;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        .nav {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .nav a {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 18px;
+            background-color: #0b5d7a;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        .nav a:hover {
+            background-color: #09485e;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #0b5d7a;
+            color: white;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px;
+        }
+        .month-bar {
+    height: 18px;
+    border-radius: 4px;
+}
+
+.bar-positive {
+    background-color: #27ae60;
+}
+
+.bar-negative {
+    background-color: #c0392b;
+}
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Chishongo CEO Dashboard</h1>
+        <p>Monitor revenue, profit, expenses, and business performance</p>
+    </div>
+
+    <div class="container">
+
+        {% if warnings %}
+        <div class="warning-box">
+            <h3>Business Alerts</h3>
+            <ul>
+                {% for warning in warnings %}
+                    <li>{{ warning }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="cards">
+            <div class="card success">
+                <h3>Total Products</h3>
+                <p>{{ total_products }}</p>
+            </div>
+
+            <div class="card success">
+                <h3>Total Sales Records</h3>
+                <p>{{ total_sales }}</p>
+            </div>
+
+            <div class="card success">
+                <h3>Total Revenue</h3>
+                <p>${{ total_revenue }}</p>
+            </div>
+
+            <div class="card success">
+                <h3>Today's Revenue</h3>
+                <p>${{ today_revenue }}</p>
+            </div>
+
+            <div class="card success">
+                <h3>Gross Profit</h3>
+                <p>${{ total_profit }}</p>
+            </div>
+
+            <div class="card success">
+                <h3>Today's Gross Profit</h3>
+                <p>${{ today_profit }}</p>
+            </div>
+
+            <div class="card danger">
+                <h3>Total Expenses</h3>
+                <p>${{ total_expenses }}</p>
+            </div>
+
+            <div class="card danger">
+                <h3>Today's Expenses</h3>
+                <p>${{ today_expenses }}</p>
+            </div>
+
+            <div class="card {% if net_profit < 0 %}danger{% else %}success{% endif %}">
+                <h3>Net Profit</h3>
+                <p>${{ net_profit }}</p>
+            </div>
+
+            <div class="card {% if today_net_profit < 0 %}danger{% else %}success{% endif %}">
+                <h3>Today's Net Profit</h3>
+                <p>${{ today_net_profit }}</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Low Stock Alerts</h2>
+            <div class="section">
+    <h2>Reorder Suggestions</h2>
+
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Current Stock</th>
+            <th>Reorder Quantity</th>
+            <th>Estimated Cost</th>
+            <th>Supplier</th>
+        </tr>
+
+        {% for item in reorder_suggestions %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.current_stock }}</td>
+            <td>{{ item.reorder_qty }}</td>
+            <td>${{ item.estimated_cost }}</td>
+            <td>{{ item.supplier }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No reorder needed</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+            <ul>
+                {% for product in low_stock_products %}
+                    <li>{{ product.name }} - only {{ product.quantity }} left</li>
+                {% empty %}
+                    <li>No low stock products</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Today's Cashier Summary</h2>
+            <table>
+                <tr>
+                    <th>Cashier</th>
+                    <th>Sales Count</th>
+                    <th>Items Sold</th>
+                    <th>Revenue</th>
+                </tr>
+                {% for cashier in today_cashier_summary %}
+                <tr>
+                    <td>{{ cashier.cashier_name }}</td>
+                    <td>{{ cashier.today_sale_count }}</td>
+                    <td>{{ cashier.today_items_sold }}</td>
+                    <td>${{ cashier.today_sales_amount }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No cashier sales today</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Today's Manager Delivery Summary</h2>
+            <table>
+                <tr>
+                    <th>Manager</th>
+                    <th>Deliveries Count</th>
+                    <th>Total Quantity Added</th>
+                    <th>Total Delivery Cost</th>
+                </tr>
+                {% for manager in today_manager_delivery_summary %}
+                <tr>
+                    <td>{{ manager.manager_name }}</td>
+                    <td>{{ manager.deliveries_count }}</td>
+                    <td>{{ manager.total_quantity_added }}</td>
+                    <td>${{ manager.total_delivery_cost }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No deliveries recorded today</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Today's Manager Expense Summary</h2>
+            <table>
+                <tr>
+                    <th>Manager</th>
+                    <th>Expenses Count</th>
+                    <th>Total Expense Amount</th>
+                </tr>
+                {% for manager in today_manager_expense_summary %}
+                <tr>
+                    <td>{{ manager.recorded_by }}</td>
+                    <td>{{ manager.expenses_count }}</td>
+                    <td>${{ manager.total_expense_amount }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No expenses recorded today</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="section">
+    <h2>Monthly Profit Trends</h2>
+    <table>
+        <tr>
+            <th>Month</th>
+            <th>Revenue</th>
+            <th>Gross Profit</th>
+            <th>Expenses</th>
+            <th>Net Profit</th>
+            <th>Trend</th>
+        </tr>
+
+        {% for item in monthly_trends %}
+        <tr>
+            <td>{{ item.month|date:"F Y" }}</td>
+            <td>${{ item.revenue }}</td>
+            <td>${{ item.gross_profit }}</td>
+            <td>${{ item.expenses }}</td>
+            <td>${{ item.net_profit }}</td>
+            <td>
+                <div
+                    class="month-bar {% if item.net_profit < 0 %}bar-negative{% else %}bar-positive{% endif %}"
+                    style="width: {{ item.bar_width }}%;">
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No monthly trend data yet</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+        <div class="section">
+            <h2>Best Selling Products</h2>
+            <ul>
+                {% for item in top_products %}
+                    <li>{{ item.product__name }} - {{ item.total_qty }} sold</li>
+                {% empty %}
+                    <li>No sales yet</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Most Profitable Products</h2>
+            <ul>
+                {% for item in profitable_products %}
+                    <li>{{ item.product__name }} - Profit: ${{ item.total_profit }}</li>
+                {% empty %}
+                    <li>No profit data yet</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Cashier Performance</h2>
+            <table>
+                <tr>
+                    <th>Cashier Name</th>
+                    <th>Total Revenue</th>
+                    <th>Total Items Sold</th>
+                </tr>
+                {% for cashier in cashier_performance %}
+                <tr>
+                    <td>{{ cashier.cashier_name }}</td>
+                    <td>${{ cashier.total_sales_amount }}</td>
+                    <td>{{ cashier.total_items_sold }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No cashier sales yet</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Recent Stock Deliveries</h2>
+            <ul>
+                {% for delivery in recent_deliveries %}
+                    <li>{{ delivery.product.name }} +{{ delivery.quantity_added }} by {{ delivery.manager_name }}</li>
+                {% empty %}
+                    <li>No deliveries yet</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Recent Expenses</h2>
+            <ul>
+                {% for expense in recent_expenses %}
+                    <li>{{ expense.category }} - ${{ expense.amount }} ({{ expense.recorded_by }})</li>
+                {% empty %}
+                    <li>No expenses recorded yet</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="nav">
+            <a href="/products/">Inventory</a>
+            <a href="/sales/">Sales Records</a>
+            <a href="/deliveries/">Stock Deliveries</a>
+            <a href="/expenses/">Expenses</a>
+            <a href="/reports/">Business Reports</a>
+            <a href="/stock-history/">Stock History</a>
+            <a href="/home/">Home</a>
+            <a href="/logout/">Logout</a>
+        </div>
+
+    </div>
+
+</body>
+</html>

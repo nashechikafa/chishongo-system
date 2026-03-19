@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory - Chishongo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #0b5d7a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 70%;
+            padding: 10px;
+        }
+
+        .search-box button, .search-box a {
+            padding: 10px 14px;
+            background-color: #0b5d7a;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #0b5d7a;
+            color: white;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px;
+        }
+
+        .nav {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .nav a {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 18px;
+            background-color: #0b5d7a;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Inventory Products</h1>
+    </div>
+
+    <div class="container">
+        <form method="GET" class="search-box">
+            <input type="text" name="q" placeholder="Search by product name or supplier" value="{{ query }}">
+            <button type="submit">Search</button>
+            <a href="/products/">Clear</a>
+        </form>
+
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Buying Price</th>
+                <th>Selling Price</th>
+                <th>Supplier</th>
+            </tr>
+
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>{{ product.buying_price }}</td>
+                <td>{{ product.selling_price }}</td>
+                <td>{{ product.supplier }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No products found</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="nav">
+            <a href="/dashboard/">Dashboard</a>
+            <a href="/home/">Home</a>
+        </div>
+    </div>
+
+</body>
+</html>
