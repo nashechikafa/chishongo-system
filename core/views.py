@@ -43,7 +43,13 @@ def logout_view(request):
 
 @login_required
 def home(request):
-    return render(request, 'core/home.html')
+    role = None
+    if hasattr(request.user, 'userprofile'):
+        role = request.userprofile.role
+
+    return render(request, 'core/home.html', {
+        'role': role
+    })
 
 
 @login_required
