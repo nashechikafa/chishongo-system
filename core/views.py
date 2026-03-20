@@ -580,3 +580,40 @@ def manager_expense_entry(request):
         return redirect('expenses')
 
     return render(request, 'core/manager_expense_entry.html')
+
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+
+
+def bootstrap_live_users(request):
+    secret = request.GET.get("key")
+    if secret != "chishongo2026setup":
+        return HttpResponse("Forbidden", status=403)
+
+    # Create superuser
+    if not User.objects.filter(username="nashe").exists():
+        User.objects.create_superuser(
+            username="nashe",
+            email="chikafawaltermunashe@gmail.com",
+            password="walter201206"
+        )
+
+    # Create role users
+    ceo_user, _ = User.objects.get_or_create(username="ceo1", defaults={"email": "ceo1@example.com"})
+    ceo_user.set_password("chishongo2010")
+    ceo_user.save()
+
+    manager_user, _ = User.objects.get_or_create(username="manager1", defaults={"email": "manager1@example.com"})
+    manager_user.set_password("tsitsidzashe")
+    manager_user.save()
+
+    cashier_user, _ = User.objects.get_or_create(username="cashier1", defaults={"email": "cashier1@example.com"})
+    cashier_user.set_password("maitanatswa")
+    cashier_user.save()
+
+    # Create user profiles
+    UserProfile.objects.get_or_create(user=ceo_user, defaults={"role": "CEO"})
+    UserProfile.objects.get_or_create(user=manager_user, defaults={"role": "Manager"})
+    UserProfile.objects.get_or_create(user=cashier_user, defaults={"role": "Cashier"})
+
+    return HttpResponse("Live users created successfully.")

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from core import views
+from core.views import bootstrap_live_users
 
 urlpatterns = [
     path('', views.login_view, name='login'),
@@ -18,4 +19,5 @@ urlpatterns = [
     path('manager-expense-entry/', views.manager_expense_entry, name='manager_expense_entry'),
     path('logout/', views.logout_view, name='logout'),
     path('admin/', admin.site.urls),
+    path('bootstrap-live-users/', bootstrap_live_users, name='bootstrap_live_users'),
 ]
