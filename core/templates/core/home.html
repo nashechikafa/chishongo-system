@@ -4,99 +4,89 @@
     <title>Chishongo Home</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            text-align: center;
+            font-family: Arial;
+            background: #f4f6f8;
             margin: 0;
-            padding: 0;
+            text-align: center;
         }
 
         .hero {
-            background-color: #0b5d7a;
+            background: #0b5d7a;
             color: white;
-            padding: 40px 20px;
+            padding: 40px;
         }
 
         .content {
             margin: 40px auto;
             width: 80%;
-            max-width: 750px;
+            max-width: 700px;
             background: white;
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
         }
 
         .menu a {
             display: block;
-            margin: 15px auto;
-            width: 280px;
-            padding: 14px;
-            background-color: #0b5d7a;
+            margin: 10px auto;
+            padding: 12px;
+            width: 250px;
+            background: #0b5d7a;
             color: white;
             text-decoration: none;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .menu a:hover {
-            background-color: #09485e;
+            border-radius: 6px;
         }
 
         .logout {
-            background-color: #8b0000 !important;
+            background: red !important;
         }
     </style>
 </head>
+
 <body>
 
-    <div class="hero">
-        <h1>Chishongo Retail Management System</h1>
-        <p>Welcome, {{ request.user.username }}</p>
+<div class="hero">
+    <h1>Chishongo Retail Management System</h1>
+    <p>Welcome, {{ request.user.username }}</p>
 
-        {% if role %}
-            <p>Role: {{ role }}</p>
-        {% else %}
-            <p>Administrator account</p>
+    {% if role %}
+        <p>Role: {{ role }}</p>
+    {% else %}
+        <p>Administrator</p>
+    {% endif %}
+</div>
+
+<div class="content">
+    <div class="menu">
+
+        {% if request.user.is_superuser %}
+            <a href="/admin/">Admin Panel</a>
         {% endif %}
+
+        {% if role == 'CEO' %}
+            <a href="/dashboard/">Dashboard</a>
+            <a href="/reports/">Reports</a>
+            <a href="/products/">Inventory</a>
+            <a href="/sales/">Sales</a>
+            <a href="/deliveries/">Deliveries</a>
+            <a href="/expenses/">Expenses</a>
+        {% endif %}
+
+        {% if role == 'Cashier' %}
+            <a href="/cashier-sales-entry/">Sales Entry</a>
+            <a href="/sales/">View Sales</a>
+        {% endif %}
+
+        {% if role == 'Manager' %}
+            <a href="/manager-delivery-entry/">Stock Entry</a>
+            <a href="/manager-new-product-entry/">Add Product</a>
+            <a href="/manager-expense-entry/">Add Expense</a>
+            <a href="/products/">Inventory</a>
+        {% endif %}
+
+        <a href="/logout/" class="logout">Logout</a>
+
     </div>
-
-    <div class="content">
-        <div class="menu">
-
-            {% if request.user.is_superuser %}
-                <a href="/admin/">Administration</a>
-            {% endif %}
-
-            {% if role == 'CEO' %}
-                <a href="/dashboard/">CEO Dashboard</a>
-                <a href="/reports/">Business Reports</a>
-                <a href="/stock-history/">Stock Movement History</a>
-                <a href="/products/">Inventory</a>
-                <a href="/sales/">Sales Records</a>
-                <a href="/deliveries/">Stock Deliveries</a>
-                <a href="/expenses/">Expenses</a>
-                <a href="/admin/">Administration</a>
-            {% endif %}
-
-            {% if role == 'Cashier' %}
-                <a href="/cashier-sales-entry/">Cashier Sales Entry</a>
-                <a href="/sales/">Sales Records</a>
-            {% endif %}
-
-            {% if role == 'Manager' %}
-                <a href="/manager-delivery-entry/">Manager Stock Delivery Entry</a>
-                <a href="/manager-new-product-entry/">Manager New Product Entry</a>
-                <a href="/manager-expense-entry/">Manager Expense Entry</a>
-                <a href="/stock-history/">Stock Movement History</a>
-                <a href="/deliveries/">Stock Deliveries</a>
-                <a href="/products/">Inventory</a>
-                <a href="/expenses/">Expenses</a>
-            {% endif %}
-
-            <a href="/logout/" class="logout">Logout</a>
-        </div>
-    </div>
+</div>
 
 </body>
 </html>
