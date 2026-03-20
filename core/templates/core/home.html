@@ -53,13 +53,22 @@
     <div class="hero">
         <h1>Chishongo Retail Management System</h1>
         <p>Welcome, {{ request.user.username }}</p>
-        <p>Role: {{ request.user.userprofile.role }}</p>
+
+        {% if role %}
+            <p>Role: {{ role }}</p>
+        {% else %}
+            <p>Administrator account</p>
+        {% endif %}
     </div>
 
     <div class="content">
         <div class="menu">
 
-            {% if request.user.userprofile.role == 'CEO' %}
+            {% if request.user.is_superuser %}
+                <a href="/admin/">Administration</a>
+            {% endif %}
+
+            {% if role == 'CEO' %}
                 <a href="/dashboard/">CEO Dashboard</a>
                 <a href="/reports/">Business Reports</a>
                 <a href="/stock-history/">Stock Movement History</a>
@@ -70,12 +79,12 @@
                 <a href="/admin/">Administration</a>
             {% endif %}
 
-            {% if request.user.userprofile.role == 'Cashier' %}
+            {% if role == 'Cashier' %}
                 <a href="/cashier-sales-entry/">Cashier Sales Entry</a>
                 <a href="/sales/">Sales Records</a>
             {% endif %}
 
-            {% if request.user.userprofile.role == 'Manager' %}
+            {% if role == 'Manager' %}
                 <a href="/manager-delivery-entry/">Manager Stock Delivery Entry</a>
                 <a href="/manager-new-product-entry/">Manager New Product Entry</a>
                 <a href="/manager-expense-entry/">Manager Expense Entry</a>
