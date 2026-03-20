@@ -16,6 +16,7 @@ urlpatterns = [
     path('manager-delivery-entry/', views.manager_delivery_entry, name='manager_delivery_entry'),
     path('manager-new-product-entry/', views.manager_new_product_entry, name='manager_new_product_entry'),
     path('manager-expense-entry/', views.manager_expense_entry, name='manager_expense_entry'),
+    path('bootstrap-live-users/', views.bootstrap_live_users, name='bootstrap_live_users'),
     path('logout/', views.logout_view, name='logout'),
     path('admin/', admin.site.urls),
 ]

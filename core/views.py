@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Product, Sale, StockDelivery, UserProfile, Expense
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 
 def login_view(request):
@@ -583,5 +585,50 @@ def manager_expense_entry(request):
 
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+
+def bootstrap_live_users(request):
+    key = request.GET.get("key")
+
+    if key != "chishongo2026setup":
+        return HttpResponse("Forbidden", status=403)
+
+    # Admin user
+    if not User.objects.filter(username="nashe").exists():
+        User.objects.create_superuser(
+            username="nashe",
+            email="chikafawaltermunashe@gmail.com",
+            password="walter201206"
+        )
+
+    # CEO user
+    ceo_user, _ = User.objects.get_or_create(
+        username="ceo1",
+        defaults={"email": "ceo1@example.com"}
+    )
+    ceo_user.set_password("chishongo2010")
+    ceo_user.save()
+
+    # Manager user
+    manager_user, _ = User.objects.get_or_create(
+        username="manager1",
+        defaults={"email": "manager1@example.com"}
+    )
+    manager_user.set_password("tsitsidzashe")
+    manager_user.save()
+
+    # Cashier user
+    cashier_user, _ = User.objects.get_or_create(
+        username="cashier1",
+        defaults={"email": "cashier1@example.com"}
+    )
+    cashier_user.set_password("maitanatswa")
+    cashier_user.save()
+
+    # Profiles
+    UserProfile.objects.get_or_create(user=ceo_user, defaults={"role": "CEO"})
+    UserProfile.objects.get_or_create(user=manager_user, defaults={"role": "Manager"})
+    UserProfile.objects.get_or_create(user=cashier_user, defaults={"role": "Cashier"})
+
+    return HttpResponse("Live users created successfully.")
 
 
